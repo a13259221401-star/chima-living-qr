@@ -16,6 +16,32 @@
 - 高容错、可实际扫描的彩色二维码
 - 可分享的 URL 状态编码
 
+## 运行效果
+
+### 中文首页
+
+网址会稳定生成专属锦鲤、荷花、芦苇、水面色彩与生态二维码。
+
+![池码中文首页](docs/images/homepage-desktop.png)
+
+### 湖蓝生态二维码
+
+二维码会继承鱼塘的主色、生态元素和网址种子，不是独立生成的固定配色。
+
+![湖蓝生态二维码](docs/images/ecology-qr-lake-blue.png)
+
+### 六套生态主色
+
+樱粉、鸢紫、锦橙、日金、荷青和湖蓝会同步作用于鱼塘与二维码。
+
+![六套生态主色对比](docs/images/six-ecology-palettes.png)
+
+### 移动端
+
+<p align="center">
+  <img src="docs/images/homepage-mobile.png" alt="池码移动端首页" width="390">
+</p>
+
 ## 技术栈
 
 - React 19
