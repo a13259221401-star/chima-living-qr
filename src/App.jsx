@@ -15,6 +15,14 @@ const ECOLOGY_PRESETS = [
   { name: "荷青", waterShift: 6, koiShift: 145, lotusShift: 125 },
   { name: "湖蓝", waterShift: 35, koiShift: 205, lotusShift: 185 },
 ];
+const QR_ECOLOGY_PRESETS = [
+  { water: "#216b78", koi: "#b72f68", lotus: "#753f9f", reeds: "#627126" },
+  { water: "#24717c", koi: "#6f3fb3", lotus: "#b43d6c", reeds: "#677428" },
+  { water: "#26717a", koi: "#c54122", lotus: "#963764", reeds: "#687127" },
+  { water: "#1e6f78", koi: "#9c6800", lotus: "#96375d", reeds: "#507027" },
+  { water: "#225f79", koi: "#147669", lotus: "#983b68", reeds: "#687126" },
+  { water: "#1c666a", koi: "#176fa7", lotus: "#953964", reeds: "#5d7129" },
+];
 const DEFAULT_URL = "https://icqr.com/living-koi-pond";
 
 function hashString(value) {
@@ -90,30 +98,22 @@ function derivePondTheme(text, mode, paletteIndex) {
     Day: { brightness: 1.07, saturation: 1.06, qrMix: 0.04 },
     Night: { brightness: 0.73, saturation: 0.82, qrMix: 0.12 },
   }[mode];
-  const background = "#f7f2e8";
+  const background = "#fffdf7";
   const selectedColor = PALETTES[paletteIndex];
-  const accent = ensureQrContrast(mixColor(selectedColor, "#171717", modeTone.qrMix), background, 3.2);
-  const modeEcology = {
-    Dawn: {
-      water: mixColor(accent, "#8f7a33", 0.28),
-      koi: accent,
-      lotus: mixColor(accent, "#a94762", 0.22),
-      reeds: mixColor(accent, "#66753c", 0.36),
-    },
-    Day: {
-      water: mixColor(accent, "#246e71", 0.3),
-      koi: accent,
-      lotus: mixColor(accent, "#9e476c", 0.24),
-      reeds: mixColor(accent, "#4f713f", 0.38),
-    },
-    Night: {
-      water: mixColor(accent, "#2d445d", 0.34),
-      koi: accent,
-      lotus: mixColor(accent, "#5e486e", 0.3),
-      reeds: mixColor(accent, "#655d36", 0.42),
-    },
-  }[mode];
-  const ecology = Object.fromEntries(Object.entries(modeEcology).map(([key, color]) => [key, ensureQrContrast(color, background, 3.2)]));
+  const qrPreset = QR_ECOLOGY_PRESETS[paletteIndex];
+  const modeInkMix = { Dawn: 0, Day: 0.025, Night: 0.085 }[mode];
+  const makeInk = (semanticColor) => ensureQrContrast(
+    mixColor(semanticColor, "#171717", modeInkMix),
+    background,
+    4.6,
+  );
+  const ecology = {
+    water: makeInk(qrPreset.water),
+    koi: makeInk(qrPreset.koi),
+    lotus: makeInk(qrPreset.lotus),
+    reeds: makeInk(qrPreset.reeds),
+  };
+  const accent = ecology.koi;
 
   return {
     name: preset.name,
@@ -122,7 +122,7 @@ function derivePondTheme(text, mode, paletteIndex) {
     finder: ecology.reeds,
     selectedColor,
     ecology,
-    finderColors: [ecology.koi, ecology.water, ecology.reeds],
+    finderColors: [ecology.reeds, ecology.koi, ecology.water],
     waterShift: preset.waterShift + urlJitter * 0.45,
     koiShift: preset.koiShift + urlJitter * 0.7,
     lotusShift: preset.lotusShift + urlJitter * 0.5,
@@ -144,9 +144,9 @@ function ecologyModuleColor(theme, life, text, row, col, size, inFinder) {
   if (nearestLotus < (0.055 + noise * 0.02) ** 2) return theme.ecology.lotus;
   if (nearestFish < (0.06 + noise * 0.018) ** 2) return theme.ecology.koi;
   if ((x < 0.14 || x > 0.86 || y < 0.13 || y > 0.87) && noise > 0.28) return theme.ecology.reeds;
-  if (noise < 0.48) return theme.ecology.koi;
-  if (noise < 0.68) return theme.ecology.water;
-  if (noise < 0.84) return theme.ecology.lotus;
+  if (noise < 0.55) return theme.ecology.koi;
+  if (noise < 0.72) return theme.ecology.water;
+  if (noise < 0.87) return theme.ecology.lotus;
   return theme.ecology.reeds;
 }
 
@@ -191,13 +191,26 @@ function drawQr(canvas, text, theme) {
   const symbol = QRCode.create(text, { errorCorrectionLevel: "H" });
   const modules = symbol.modules;
   const life = buildLife(text);
-  const maxQr = Math.min(rect.width * 0.68, rect.height * 0.58, 420);
+  const isMobile = rect.width <= 700;
+  const isCompactDesktop = !isMobile && rect.height < 760;
+  const topReserve = isMobile ? 150 : isCompactDesktop ? 82 : 90;
+  const bottomReserve = isMobile ? 226 : isCompactDesktop ? 174 : 205;
+  const availableHeight = Math.max(210, rect.height - topReserve - bottomReserve);
+  const maxQr = Math.min(rect.width * (isMobile ? 0.78 : 0.62), availableHeight, 420);
   const cell = Math.max(4, Math.floor(maxQr / (modules.size + 8)));
   const qrSize = (modules.size + 8) * cell;
   const x = Math.round((rect.width - qrSize) / 2);
-  const y = Math.round(Math.max(72, (rect.height - qrSize) / 2 - 58));
+  const y = Math.round(topReserve + Math.max(0, (availableHeight - qrSize) / 2));
+  ctx.save();
+  ctx.shadowColor = "rgba(66, 52, 30, .14)";
+  ctx.shadowBlur = 20;
+  ctx.shadowOffsetY = 7;
   ctx.fillStyle = theme.background;
   ctx.fillRect(x, y, qrSize, qrSize);
+  ctx.restore();
+  ctx.strokeStyle = "rgba(86, 68, 42, .12)";
+  ctx.lineWidth = 1;
+  ctx.strokeRect(x + 0.5, y + 0.5, qrSize - 1, qrSize - 1);
   for (let row = 0; row < modules.size; row += 1) {
     for (let col = 0; col < modules.size; col += 1) {
       if (!modules.get(row, col)) continue;

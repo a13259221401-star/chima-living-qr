@@ -5,6 +5,7 @@
 - Source visual truth: `C:\Users\Administrator\.codex\generated_images\01a03bbf-bb4d-75c2-8acd-6ac2b42f20b2\exec-46362672-457a-4a1e-a8d2-c3262da126c0.png`
 - Ecology-pixel QR reference supplied in iteration 4: `E:\Temp\codex-clipboard-4569bb09-ccb3-43ab-a551-aeda4b29c6c5.png`
 - Palette-control reference supplied in iteration 5: `E:\Temp\codex-clipboard-5eef4a80-559f-4828-a010-329d48dd6dae.png`
+- High-contrast QR reference supplied in iteration 6: `E:\Temp\codex-clipboard-7c4321b7-5750-4d6e-a324-a009cdd73dd5.png`
 - Browser-rendered desktop implementation: `E:\创作\icqr-tree-clone\qa\koi-pond-desktop-final-v2.png`
 - Browser-rendered mobile implementation: `E:\创作\icqr-tree-clone\qa\koi-pond-mobile.png`
 - QR implementation state: `E:\创作\icqr-tree-clone\qa\koi-pond-qr.png`
@@ -19,6 +20,10 @@
 - Six palette comparison: `E:\创作\icqr-tree-clone\qa\comparison-six-chinese-palettes.png`
 - Palette-control comparison: `E:\创作\icqr-tree-clone\qa\comparison-chinese-palette-control.png`
 - Chinese mobile pond / QR: `E:\创作\icqr-tree-clone\qa\chinese-home-mobile-v2.png`, `E:\创作\icqr-tree-clone\qa\chinese-home-mobile-qr-v2.png`
+- High-contrast lake QR desktop/compact/mobile: `E:\创作\icqr-tree-clone\qa\contrast-optimized\04-qr-final-lake-1280x720.png`, `E:\创作\icqr-tree-clone\qa\contrast-optimized\05-qr-final-934x529.png`, `E:\创作\icqr-tree-clone\qa\contrast-optimized\06-qr-mobile-390x844.png`
+- High-contrast reference/implementation comparison: `E:\创作\icqr-tree-clone\qa\contrast-optimized\07-side-by-side.png`
+- Six high-contrast palette states: `E:\创作\icqr-tree-clone\qa\contrast-optimized\palette-1.png` through `palette-6.png`
+- Dawn/Day/Night high-contrast states: `E:\创作\icqr-tree-clone\qa\contrast-optimized\mode-1.png` through `mode-3.png`
 - Mobile forming state: `E:\创作\icqr-tree-clone\qa\interaction-forming-mobile.png`
 - Mobile linked QR state: `E:\创作\icqr-tree-clone\qa\interaction-linked-qr-mobile.png`
 - Full-view comparison: `E:\创作\icqr-tree-clone\qa\comparison-koi-pond-final-v2.png`
@@ -31,7 +36,7 @@
 
 - Fonts and typography: system UI/Inter-like stack, input text, short mode labels, weights and compact hierarchy align with the generated source. No wrapping or truncation at the desktop target. The mobile input intentionally truncates a very long URL inside the field while preserving editing.
 - Spacing and layout rhythm: logo and info positions, centered isometric hero, reveal pill, input/share row, three equal mode controls and palette row follow the source hierarchy. The hero and controls remain fully visible at 1440 × 1024 and 390 × 844.
-- Colors and visual tokens: warm cream canvas, jade water, moss greens, blush lotus, amber share action and pale selected state match the source direction. Six named ecology presets now drive the pond raster treatment, koi, lotus, reeds, formation particles and final QR from one theme object. Dawn, Day and Night provide distinct environment treatments; QR foregrounds are automatically darkened to at least 4.5:1 against the cream quiet zone.
+- Colors and visual tokens: warm cream canvas, jade water, moss greens, blush lotus, amber share action and pale selected state match the source direction. Six named ecology presets drive the pond raster treatment, koi, lotus, reeds, formation particles and final QR. The QR now uses a related high-contrast ink palette: water, selected-color koi, lotus and reeds remain semantically recognizable but have stronger hue separation, and every foreground is automatically darkened to at least 4.6:1 against the independent warm-white quiet zone.
 - Image quality and asset fidelity: the pond, koi, lotus and reeds are independent generated raster assets grounded in the selected concept. No placeholders, CSS drawings, handcrafted SVG artwork or stretched screenshot are used. The checkerboard halo found in the first pass was removed by regenerating the pond base on the exact warm-cream canvas.
 - Copy and content: `Dawn`, `Day`, `Night`, the living-pond reveal copy, URL input and share affordance match the chosen concept and remain accessible.
 
@@ -49,6 +54,7 @@ No actionable P0, P1 or P2 findings remain.
 - QR: `qa/koi-pond-qr.png` was decoded by OpenCV as `https://a-very-long-living-koi-pond.example.com/garden/night?lotus=full`.
 - Linked QR: `qa/interaction-linked-qr.png` and the 390 × 844 mobile QR both decoded as `https://icqr.com/l111111111111iving-koi-pond` after the staged pond transformation.
 - Theme-linked QR: `qa/theme-jade-qr.png` decoded as `https://https:vin111111111-koi-pond`; `qa/theme-live-url-night-qr.png` decoded as `https://example.com/living-water-garden/long-seed-2026` after switching to Night + Blossom and editing the URL live.
+- High-contrast QR: all six palette screenshots, all three light-mode screenshots, the 934 × 529 compact desktop screenshot and the 390 × 844 mobile screenshot decoded as `https://icqr.com/living-koi-pond`.
 - Browser console: no warnings or errors in Dawn, Night, URL-editing, QR or mobile states.
 
 ## Comparison history
@@ -88,6 +94,14 @@ No actionable P0, P1 or P2 findings remain.
 - Post-fix evidence: `qa/comparison-chinese-palette-control.png`, `qa/comparison-six-chinese-palettes.png`, `qa/chinese-home-lake-pond-v2.png`, `qa/chinese-home-lake-qr-v2.png`, `qa/chinese-home-mobile-v2.png`, and `qa/chinese-home-mobile-qr-v2.png`.
 - Result: every selected swatch now produces a clearly corresponding same-hue QR family and matching pond treatment. All six desktop palette QR states and the mobile lake-blue state decode to `https://icqr.com/living-koi-pond`. No remaining P0, P1 or P2 finding.
 
+### Iteration 6 — QR contrast and compact layout
+
+- P1: the four QR module colors met a basic background contrast but remained clustered in similar blue-gray tones. The pond-to-QR transition therefore lacked the high-energy visual separation seen in the supplied orange/gold/olive reference.
+- P2: at 934 × 529, the ecology legend overlapped the top finder region and the large pond could collide with the control stack.
+- Fixes: separated the soft pond palette from six explicit high-contrast QR ink presets; raised the foreground/background target to 4.6:1; retained semantic water/koi/lotus/reed colors while increasing hue separation; made the selected palette color the dominant koi ink; increased dominant-color module share; added a warm-white QR surface, subtle border and elevation; moved the compact-desktop legend beside the QR; reserved layout space for the controls; reduced and repositioned the compact pond.
+- Post-fix evidence: `qa/contrast-optimized/04-qr-final-lake-1280x720.png`, `qa/contrast-optimized/05-qr-final-934x529.png`, `qa/contrast-optimized/06-qr-mobile-390x844.png`, and `qa/contrast-optimized/07-side-by-side.png`.
+- Result: the QR has a clear visual jump from the soft pond while preserving the ecology relationship. No finder or control overlap remains at 934 × 529 or 390 × 844. Six palettes, three light modes, compact desktop and mobile all decode to the expected URL. No remaining P0, P1 or P2 finding.
+
 ## Primary interactions tested
 
 - Character-by-character URL editing and debounced query-state persistence.
@@ -100,6 +114,8 @@ No actionable P0, P1 or P2 findings remain.
 - URL-seeded water/koi/lotus/reed module mapping in both the pond-surface formation and final QR.
 - Chinese homepage hierarchy, brand, instructions, controls and accessibility labels.
 - Six selected-color fidelity states, plus desktop and 390 × 844 mobile lake-blue QR decoding.
+- Six high-contrast QR palettes and Dawn/Day/Night decoding at 934 × 529.
+- Independent compact-desktop QR layout with a side ecology legend and protected finder regions.
 - Pond-to-QR and QR-to-pond transitions.
 - Three-stage pond-to-QR formation and reverse dissolution, including the 300 ms and 800 ms intermediate frames.
 - Desktop 1440 × 1024 and mobile 390 × 844 responsive layouts.
