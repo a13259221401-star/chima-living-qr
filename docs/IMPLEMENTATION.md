@@ -2,6 +2,14 @@
 
 本文档说明“池码｜会生长的生态二维码”的技术实现、数据流、核心算法、动画状态及扩展方式。项目是纯前端应用，不依赖业务后端；相同的网址、光线环境和生态主色会稳定生成相同的鱼塘与二维码视觉。
 
+## 最终运行效果
+
+![池码中文首页](images/homepage-desktop.png)
+
+鱼塘聚合后的二维码会继续使用同一网址种子与生态颜色：
+
+![湖蓝生态二维码](images/ecology-qr-lake-blue.png)
+
 ## 1. 实现目标
 
 项目围绕三个目标设计：
@@ -74,6 +82,46 @@ docs/images/                   README 运行效果图
 | `reeds.png` | 1024 × 1536 | 32 位 ARGB | 是 | 布置在池塘三侧，构成前景层和岸边层次 |
 
 锦鲤、荷花和芦苇必须保留 Alpha 通道，否则元素运动或换色时会带着矩形背景一起移动。鱼塘底图本身是完整矩形 RGB 图片，页面通过等距菱形 `clip-path` 限定可见区域，因此不依赖透明通道。
+
+#### 鱼塘底图预览
+
+鱼塘底图保留完整的水面、石岸和基础植被，中心没有预先绘制固定锦鲤或荷花，给动态生命元素留出空间。
+
+<p align="center">
+  <img src="../public/assets/koi-pond/pond-base.png" alt="等距鱼塘底图" width="760">
+</p>
+
+#### 透明抠图素材预览
+
+下列图片是网页实际使用的透明 PNG。GitHub 页面中的白色区域是页面背景，不属于图片本身；锦鲤、荷花和芦苇四周均保留 Alpha 透明通道。
+
+<table>
+  <tr>
+    <td align="center" width="50%">
+      <img src="../public/assets/koi-pond/koi-red-white.png" alt="透明背景的红白锦鲤素材" width="430"><br>
+      <strong>锦鲤透明抠图</strong><br>
+      <code>koi-red-white.png</code>
+    </td>
+    <td align="center" width="50%">
+      <img src="../public/assets/koi-pond/lotus-cluster.png" alt="透明背景的荷花与荷叶素材" width="360"><br>
+      <strong>荷花透明抠图</strong><br>
+      <code>lotus-cluster.png</code>
+    </td>
+  </tr>
+  <tr>
+    <td align="center" colspan="2">
+      <img src="../public/assets/koi-pond/reeds.png" alt="透明背景的芦苇素材" width="300"><br>
+      <strong>芦苇透明抠图</strong><br>
+      <code>reeds.png</code>
+    </td>
+  </tr>
+</table>
+
+#### 素材组合后的主题效果
+
+同一组素材通过 CSS 色相、亮度和饱和度处理形成六套生态主色，无需为每种颜色重复生成图片。
+
+![六套生态主色组合效果](images/six-ecology-palettes.png)
 
 ### 4.2 素材生成策略
 
